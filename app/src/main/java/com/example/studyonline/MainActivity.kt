@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.View.VISIBLE
 import android.widget.Button
@@ -26,6 +27,8 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.studyonline.ui.login.LoginActivity
+import java.sql.Connection
+import java.sql.DriverManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -34,6 +37,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        Thread {
+            mysqlConnect()
+        }.start()
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -84,5 +90,22 @@ class MainActivity : AppCompatActivity() {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    companion object {
+        lateinit var cn: Connection
+
+        private fun mysqlConnect() {
+            Class.forName("com.mysql.jdbc.Driver")
+            cn = DriverManager.getConnection("jdbc:mysql://bj-cynosdbmysql-grp-4pz1e9su.sql.tencentcdb.com:22020/study_online",
+                "sujiulou", "yan?545392961")
+            val ps = cn.createStatement()
+            val resultSet = ps!!.executeQuery("select * from users")
+            while (resultSet.next()) {
+                Log.d("mysqlConnection: " , resultSet.getString(1))
+            }
+            ps.close()
+            cn.close()
+        }
     }
 }
