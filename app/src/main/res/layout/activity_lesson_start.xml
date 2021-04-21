@@ -6,11 +6,17 @@
     android:orientation="vertical"
     android:background="@color/teal_200"
     tools:context=".LessonStartActivity">
-    <View
+    <net.ossrs.yasea.SrsCameraView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.4"
+        android:visibility="gone"
         android:id="@+id/live_video" />
+    <io.vov.vitamio.widget.VideoView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
+        android:id="@+id/live_watch" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
