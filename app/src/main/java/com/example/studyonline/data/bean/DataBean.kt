@@ -40,7 +40,7 @@ class DataBean {
                 )
                 list.add(
                     DataBean(
-                        "http://images.wenku.it168.com/pdf/2019-10-11/1765191/FEADD8A50854BA7C020B31B6FC71A5AE.png",
+                        "https://yunkai.com/20191213000031-4c90873b8c55b68ab52475f44253dcdb.png",
                         null,
                         1
                     )

@@ -7,8 +7,7 @@ class UserBean(
     val userId: String,
     val userName: String,
     val userPassword: String,
-    val userIdentity: Identity,
-    val lessons: ArrayList<Int>
+    val userIdentity: Identity
 ) {
     companion object {
         val testData5: List<UserBean>
@@ -20,8 +19,7 @@ class UserBean(
                         "10001",
                         "zhao",
                         "123456",
-                        Identity.TEACHER,
-                        ArrayList(listOf(1))
+                        Identity.TEACHER
                     )
                 )
                 list.add(
@@ -30,8 +28,7 @@ class UserBean(
                         "10002",
                         "qian",
                         "123456",
-                        Identity.TEACHER,
-                        ArrayList(listOf(2))
+                        Identity.TEACHER
                     )
                 )
                 list.add(
@@ -40,8 +37,7 @@ class UserBean(
                         "sun",
                         "10003",
                         "123456",
-                        Identity.TEACHER,
-                        ArrayList(listOf(3))
+                        Identity.TEACHER
                     )
                 )
                 list.add(
@@ -50,8 +46,7 @@ class UserBean(
                         "10004",
                         "li",
                         "123456",
-                        Identity.TEACHER,
-                        ArrayList(listOf(4))
+                        Identity.TEACHER
                     )
                 )
                 list.add(
@@ -60,8 +55,7 @@ class UserBean(
                         "10005",
                         "zhou",
                         "123456",
-                        Identity.TEACHER,
-                        ArrayList(listOf(5))
+                        Identity.TEACHER
                     )
                 )
                 list.add(
@@ -70,8 +64,7 @@ class UserBean(
                         "100001",
                         "wu",
                         "123456",
-                        Identity.STUDENT,
-                        ArrayList(listOf(1,2))
+                        Identity.STUDENT
                     )
                 )
                 list.add(
@@ -80,8 +73,7 @@ class UserBean(
                         "100002",
                         "zhen",
                         "123456",
-                        Identity.STUDENT,
-                        ArrayList(listOf(3,4,5))
+                        Identity.STUDENT
                     )
                 )
                 return list
@@ -90,6 +82,6 @@ class UserBean(
 }
 
 enum class Identity(val IDENTITY: String) {
-    TEACHER("teacher"),
-    STUDENT("student")
+    TEACHER("TEACHER"),
+    STUDENT("STUDENT")
 }

@@ -23,7 +23,7 @@ class NewsBean(val title: String, val text: String, val imageUri: String) {
                     NewsBean(
                         "33333333333333",
                         "cccccccccccccc",
-                        "http://www.120xjxc.com/wp-content/uploads/2020/08/184-2.jpg"
+                        "https://yunkai.com/20191213000031-4c90873b8c55b68ab52475f44253dcdb.png"
                     )
                 )
                 list.add(

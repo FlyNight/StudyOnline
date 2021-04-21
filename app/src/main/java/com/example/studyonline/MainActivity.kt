@@ -34,12 +34,15 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        Thread {
+        val thread = Thread {
             mysqlConnect()
-        }.start()
+        }
+        thread.start()
+        thread.join()
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -83,6 +86,9 @@ class MainActivity : AppCompatActivity() {
             val userName: TextView = navHeaderRoot.findViewById(R.id.user_name)
             val btn: Button = findViewById(R.id.login_register)
             if (data != null) {
+                MainActivity.userName = data.getStringExtra("userName")!!
+                userId = data.getStringExtra("userId")!!
+                MainActivity.userIdentity = data.getStringExtra("userIdentity")!!
                 userName.text = data.getStringExtra("userName")
                 userIdentity.text = data.getStringExtra("userIdentity")
                 userIdentity.visibility = VISIBLE
@@ -93,19 +99,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
+        lateinit var userName: String
+        var userId : String = "-1"
+        lateinit var userIdentity: String
         lateinit var cn: Connection
-
         private fun mysqlConnect() {
             Class.forName("com.mysql.jdbc.Driver")
-            cn = DriverManager.getConnection("jdbc:mysql://bj-cynosdbmysql-grp-4pz1e9su.sql.tencentcdb.com:22020/study_online",
-                "sujiulou", "yan?545392961")
-            val ps = cn.createStatement()
-            val resultSet = ps!!.executeQuery("select * from users")
-            while (resultSet.next()) {
-                Log.d("mysqlConnection: " , resultSet.getString(1))
-            }
-            ps.close()
-            cn.close()
+            cn = DriverManager.getConnection(
+                "jdbc:mysql://bj-cynosdbmysql-grp-4pz1e9su.sql.tencentcdb.com:22020/study_online",
+                "sujiulou", "yan?545392961"
+            )
         }
     }
 }

@@ -14,9 +14,12 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.studyonline.MainActivity
 import com.example.studyonline.R
+import com.example.studyonline.data.LoginRepository
 import com.example.studyonline.data.adapter.LessonsAdapter
 import com.example.studyonline.data.bean.LessonBean
+import com.example.studyonline.data.holder.OptionalLessonsHolder
 
 class GalleryFragment : Fragment() {
 
@@ -59,7 +62,21 @@ class GalleryFragment : Fragment() {
 
     private fun initList(root: View) {
         val listView: ListView = root.findViewById(R.id.lesson_list)
-        val adapter = activity?.let { LessonsAdapter(it, R.layout.lesson_item, LessonBean.testData1) }
+        if (MainActivity.userId == "-1")
+            return
+        var adapter: LessonsAdapter? = null
+        val t1 = Thread {
+            adapter = activity?.let {
+                context?.let { it1 -> OptionalLessonsHolder.getDataFromDatabase(it1, MainActivity.userId) }
+                    ?.let { it2 ->
+                        LessonsAdapter(it, R.layout.lesson_item,
+                            it2
+                        )
+                    }
+            }
+        }
+        t1.start()
+        t1.join()
         listView.adapter = adapter
     }
 }

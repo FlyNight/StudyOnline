@@ -13,7 +13,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.studyonline.R
 import com.example.studyonline.data.adapter.OptionLessonsAdapter
 import com.example.studyonline.data.bean.DataBean
-import com.example.studyonline.data.bean.LessonBean
+import com.example.studyonline.data.holder.OptionalLessonsHolder
 import com.youth.banner.Banner
 import com.youth.banner.adapter.BannerImageAdapter
 import com.youth.banner.holder.BannerImageHolder
@@ -51,8 +51,18 @@ class HomeFragment : Fragment() {
 
     private fun initList(root: View) {
         val listView: ListView = root.findViewById(R.id.news_list)
-
-        val adapter = activity?.let { OptionLessonsAdapter(it, R.layout.optional_lesson_item, LessonBean.testData1) }
+        var adapter: OptionLessonsAdapter? = null
+        val t1 = Thread {
+             adapter = activity?.let {
+                 context?.let { it1 -> OptionalLessonsHolder.getDataFromDatabase(it1, null) }?.let { it2 ->
+                     OptionLessonsAdapter(it, R.layout.optional_lesson_item,
+                         it2
+                     )
+                 }
+             }!!
+        }
+        t1.start()
+        t1.join()
         listView.adapter = adapter
     }
 }

@@ -10,9 +10,11 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.example.studyonline.LessonInformationActivity
 import com.example.studyonline.LessonStartActivity
 import com.example.studyonline.R
+import com.example.studyonline.data.LoginRepository
 import com.example.studyonline.data.bean.LessonBean
 import java.util.*
 
@@ -26,6 +28,7 @@ class LessonsAdapter(activity: Activity, private val resourceId: Int, data: List
         val lessonInformation: Button = view.findViewById(R.id.lesson_information)
         val lessonStart: Button = view.findViewById(R.id.lesson_start)
         val lesson = getItem(position)
+
         if(lesson != null) {
             lessonName.text = lesson.name
             lessonTeacher.text = lesson.teacher
