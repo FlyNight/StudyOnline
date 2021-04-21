@@ -53,7 +53,8 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'com.github.PhilJay:MPAndroidChart:3.1.0'
     implementation 'com.orient:Orient-Ui:1.0.0'
-    implementation files('libs\\mysql-connector-java-5.1.49.jar')
+    implementation files('libs/mysql-connector-java-5.1.49.jar')
+    implementation project(':library')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
