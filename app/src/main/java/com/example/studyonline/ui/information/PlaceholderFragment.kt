@@ -9,11 +9,10 @@ import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studyonline.R
-import com.example.studyonline.adapter.LessonScheduleAdapter
-import com.example.studyonline.adapter.TaskAdapter
+import com.example.studyonline.data.adapter.LessonScheduleAdapter
+import com.example.studyonline.data.adapter.TaskAdapter
 import com.example.studyonline.data.StepSTL
 import com.example.studyonline.data.bean.LessonBean
 import com.github.mikephil.charting.charts.RadarChart
@@ -22,11 +21,9 @@ import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.RadarData
 import com.github.mikephil.charting.data.RadarDataSet
 import com.github.mikephil.charting.data.RadarEntry
-import com.github.mikephil.charting.formatter.ValueFormatter
 import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration
 import com.orient.me.widget.rv.itemdocration.timeline.TimeLine
 import com.orient.me.widget.rv.layoutmanager.DoubleSideLayoutManager
-import kotlin.math.abs
 
 /**
  * A placeholder fragment containing a simple view.

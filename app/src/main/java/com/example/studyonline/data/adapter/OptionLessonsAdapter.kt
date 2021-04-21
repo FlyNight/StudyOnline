@@ -1,4 +1,4 @@
-package com.example.studyonline.adapter
+package com.example.studyonline.data.adapter
 
 import android.annotation.SuppressLint
 import android.app.Activity

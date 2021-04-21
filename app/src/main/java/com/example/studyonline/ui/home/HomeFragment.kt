@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.studyonline.R
-import com.example.studyonline.adapter.OptionLessonsAdapter
+import com.example.studyonline.data.adapter.OptionLessonsAdapter
 import com.example.studyonline.data.bean.DataBean
 import com.example.studyonline.data.bean.LessonBean
 import com.youth.banner.Banner
@@ -51,6 +51,7 @@ class HomeFragment : Fragment() {
 
     private fun initList(root: View) {
         val listView: ListView = root.findViewById(R.id.news_list)
+
         val adapter = activity?.let { OptionLessonsAdapter(it, R.layout.optional_lesson_item, LessonBean.testData1) }
         listView.adapter = adapter
     }

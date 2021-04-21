@@ -1,6 +1,5 @@
 package com.example.studyonline.ui.gallery
 
-import android.app.Activity
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -16,7 +15,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.studyonline.R
-import com.example.studyonline.adapter.LessonsAdapter
+import com.example.studyonline.data.adapter.LessonsAdapter
 import com.example.studyonline.data.bean.LessonBean
 
 class GalleryFragment : Fragment() {
