@@ -18,7 +18,8 @@ import com.example.studyonline.data.LoginRepository
 import com.example.studyonline.data.bean.LessonBean
 import java.util.*
 
-class LessonsAdapter(activity: Activity, private val resourceId: Int, data: List<LessonBean>): ArrayAdapter<LessonBean>(activity, resourceId, data) {
+class LessonsAdapter(activity: Activity, private val resourceId: Int, data: List<LessonBean>) :
+    ArrayAdapter<LessonBean>(activity, resourceId, data) {
     @SuppressLint("ViewHolder", "SimpleDateFormat")
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = LayoutInflater.from(context).inflate(resourceId, parent, false)
@@ -29,24 +30,63 @@ class LessonsAdapter(activity: Activity, private val resourceId: Int, data: List
         val lessonStart: Button = view.findViewById(R.id.lesson_start)
         val lesson = getItem(position)
 
-        if(lesson != null) {
+        if (lesson != null) {
             lessonName.text = lesson.name
             lessonTeacher.text = lesson.teacher
             lessonTime.text = lesson.time
-            val simpleDateFormat =  SimpleDateFormat("HH:mm_E")
-            val time: String = simpleDateFormat.format(Date(System.currentTimeMillis()))
-            if(time == lesson.time) {
-                lessonInformation.visibility = View.GONE
-                lessonStart.visibility = View.VISIBLE
-            } else {
-                lessonStart.visibility = View.GONE
+            val simpleDateFormat = SimpleDateFormat("HH:mm:ss_E")
+            var time: String = simpleDateFormat.format(Date(System.currentTimeMillis()))
+            when (time.substring(9)) {
+                "Mon" -> {
+                    time = time.substring(0,9) + "1"
+                }
+
+                "Tue" -> {
+                    time = time.substring(0,9) + "2"
+                }
+
+                "Wen" -> {
+                    time = time.substring(0,9) + "3"
+                }
+
+                "Thu" -> {
+                    time = time.substring(0,9) + "4"
+                }
+
+                "Fri" -> {
+                    time = time.substring(0,9) + "5"
+                }
+
+                "Sat" -> {
+                    time = time.substring(0,9) + "6"
+                }
+
+                "Sun" -> {
+                    time = time.substring(0,9) + "7"
+                }
+            }
+            if (time == lesson.time) {
                 lessonInformation.visibility = View.VISIBLE
+                lessonStart.visibility = View.GONE
+            } else {
+                lessonStart.visibility = View.VISIBLE
+                lessonInformation.visibility = View.GONE
             }
             lessonInformation.setOnClickListener {
-                context.startActivity(Intent(context, LessonInformationActivity::class.java).putExtra("lesson", lesson))
+                context.startActivity(
+                    Intent(
+                        context,
+                        LessonInformationActivity::class.java
+                    ).putExtra("lesson", lesson)
+                )
             }
             lessonStart.setOnClickListener {
-                context.startActivity(Intent(context, LessonStartActivity::class.java).putExtra("lesson", lesson))
+                context.startActivity(
+                    Intent(
+                        context,
+                        LessonStartActivity::class.java
+                    ).putExtra("lesson", lesson)
+                )
             }
         }
         return view

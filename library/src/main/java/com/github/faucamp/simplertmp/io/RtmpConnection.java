@@ -72,7 +72,7 @@ public class RtmpConnection implements RtmpPublisher {
     private int transactionIdCounter = 0;
     private AmfString serverIpAddr;
     private AmfNumber serverPid;
-    private AmfString serverId;
+    private AmfNumber serverId;
     private int videoWidth;
     private int videoHeight;
     private int videoFrameCount;
@@ -637,7 +637,7 @@ public class RtmpConnection implements RtmpPublisher {
             objData = ((AmfObject) objData.getProperty("data"));
             serverIpAddr = (AmfString) objData.getProperty("srs_server_ip");
             serverPid = (AmfNumber) objData.getProperty("srs_pid");
-            serverId = (AmfString) objData.getProperty("srs_id");
+            serverId = (AmfNumber) objData.getProperty("srs_id");
         }
         String info = "";
         info += serverIpAddr == null ? "" : " ip: " + serverIpAddr.getValue();
@@ -663,7 +663,7 @@ public class RtmpConnection implements RtmpPublisher {
 
     @Override
     public final int getServerId() {
-        return serverId == null ? 0 : Integer.parseInt(serverId.getValue());
+        return serverId == null ? 0 : (int) serverId.getValue();
     }
 
     @Override
