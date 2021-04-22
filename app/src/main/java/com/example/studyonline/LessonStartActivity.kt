@@ -10,12 +10,14 @@ import android.widget.VideoView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.studyonline.data.bean.Identity
+import com.example.studyonline.data.bean.LessonBean
 import com.github.faucamp.simplertmp.RtmpHandler
 import net.ossrs.yasea.SrsCameraView
 import net.ossrs.yasea.SrsRecordHandler
 import net.ossrs.yasea.SrsEncodeHandler
 import net.ossrs.yasea.SrsPublisher
 import java.io.IOException
+import java.io.Serializable
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import java.net.SocketException
@@ -26,9 +28,15 @@ class LessonStartActivity :
     RtmpHandler.RtmpListener,
     SrsRecordHandler.SrsRecordListener,
     SrsEncodeHandler.SrsEncodeListener {
+    lateinit var lessonId: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lesson_start)
+        val se: Serializable? = intent.getSerializableExtra("lesson")
+        if (se is LessonBean) {
+            var lesson: LessonBean = se
+            lessonId = lesson.id.toString()
+        }
         requestPermission()
         if (MainActivity.userIdentity == Identity.TEACHER.IDENTITY) {
             initTeacherView()
@@ -66,7 +74,7 @@ class LessonStartActivity :
         srsPublisher.setVideoHDMode()
         srsPublisher.startCamera()
         srsPublisher.switchToHardEncoder()
-        srsPublisher.startPublish("rtmp://82.156.194.22:1935/live/livestream")
+        srsPublisher.startPublish("rtmp://82.156.194.22/$lessonId/livestream")
     }
 
 
@@ -75,7 +83,7 @@ class LessonStartActivity :
         val videoView: VideoView = findViewById(R.id.live_watch)
         cameraView.visibility = View.GONE
         videoView.visibility = View.VISIBLE
-        videoView.setVideoPath("rtmp://82.156.194.22/live/livestream")
+        videoView.setVideoPath("rtmp://82.156.194.22:1935/$lessonId/livestream")
     }
 
     override fun onRtmpConnecting(msg: String?) {
