@@ -13,8 +13,15 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi" , "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
     }
 
     buildTypes {
@@ -30,6 +37,10 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+}
+configurations {
+    cleanedAnnotations
+    compile.exclude group: 'org.jetbrains' , module:'annotations'
 }
 
 dependencies {
@@ -53,12 +64,18 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'com.github.PhilJay:MPAndroidChart:3.1.0'
     implementation 'com.orient:Orient-Ui:1.0.0'
-    compile 'com.google.android.exoplayer:exoplayer:2.7.3'
-    compile 'com.google.android.exoplayer:extension-rtmp:2.7.3'
+    implementation 'com.google.android.exoplayer:exoplayer:2.7.3'
+    implementation 'com.google.android.exoplayer:extension-rtmp:2.7.3'
+
+    implementation 'com.github.tcking:giraffeplayer2:0.1.25'
+
+    implementation 'com.github.tcking:ijkplayer-arm64:0.8.8'
+    implementation 'com.github.tcking:ijkplayer-armv5:0.8.8'
+    implementation 'com.github.tcking:ijkplayer-x86:0.8.8'
+    implementation 'com.github.tcking:ijkplayer-x86_64:0.8.8'
+
     implementation files('libs/mysql-connector-java-5.1.49.jar')
     implementation project(':library')
-    implementation project(':vitamio')
-    implementation project(':oarplayer')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'

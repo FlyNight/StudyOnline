@@ -1,36 +1,25 @@
 package com.example.studyonline
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
-import android.view.SurfaceView
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.studyonline.data.bean.Identity
 import com.example.studyonline.data.bean.LessonBean
 import com.github.faucamp.simplertmp.RtmpHandler
-import com.google.android.exoplayer2.ExoPlayerFactory
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
-import com.google.android.exoplayer2.extractor.ExtractorsFactory
-import com.google.android.exoplayer2.source.ExtractorMediaSource
-import com.google.android.exoplayer2.source.MediaSource
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelection
-import com.google.android.exoplayer2.trackselection.TrackSelector
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter
 import com.seu.magicfilter.utils.MagicFilterType
 import net.ossrs.yasea.SrsCameraView
 import net.ossrs.yasea.SrsEncodeHandler
 import net.ossrs.yasea.SrsPublisher
 import net.ossrs.yasea.SrsRecordHandler
+import tcking.github.com.giraffeplayer2.GiraffePlayer
+import tcking.github.com.giraffeplayer2.VideoInfo
+import tcking.github.com.giraffeplayer2.VideoView
 import java.io.IOException
 import java.io.Serializable
 import java.net.SocketException
@@ -42,16 +31,18 @@ class LessonStartActivity :
     SrsRecordHandler.SrsRecordListener,
     SrsEncodeHandler.SrsEncodeListener {
     lateinit var lessonId: String
+    lateinit var lessonName: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_lesson_start)
+        requestPermission()
         val se: Serializable? = intent.getSerializableExtra("lesson")
         if (se is LessonBean) {
-            var lesson: LessonBean = se
+            val lesson: LessonBean = se
             lessonId = lesson.id.toString()
+            lessonName = lesson.name
         }
-        requestPermission()
         if (MainActivity.userIdentity == Identity.TEACHER.IDENTITY) {
+            setContentView(R.layout.activity_lesson_start_teacher)
             initTeacherView()
         }
         else {
@@ -80,12 +71,8 @@ class LessonStartActivity :
 
     lateinit var srsPublisher: SrsPublisher
     private fun initTeacherView() {
-
-
+        setContentView(R.layout.activity_lesson_start_teacher)
         val cameraView: SrsCameraView = findViewById(R.id.live_video)
-        val videoView: PlayerView = findViewById(R.id.live_watch)
-        cameraView.visibility = View.VISIBLE
-        videoView.visibility = View.GONE
         srsPublisher = SrsPublisher(cameraView)
         srsPublisher.setEncodeHandler(SrsEncodeHandler(this))
         srsPublisher.setRtmpHandler(RtmpHandler(this))
@@ -103,23 +90,15 @@ class LessonStartActivity :
         srsPublisher.startPublish("rtmp://82.156.194.22/$lessonId/livestream")
     }
 
+    @SuppressLint("InflateParams")
     private fun initStudentView() {
-        val cameraView: SrsCameraView = findViewById(R.id.live_video)
-        val videoView: PlayerView = findViewById(R.id.live_watch)
-        cameraView.visibility = View.GONE
-        videoView.visibility = View.VISIBLE
-        val bandwidthMeter = DefaultBandwidthMeter()
-        val videoTrackSelectionFactory = AdaptiveTrackSelection.Factory(bandwidthMeter)
-        val trackSelector = DefaultTrackSelector(videoTrackSelectionFactory)
-        val player : SimpleExoPlayer = ExoPlayerFactory.newSimpleInstance(applicationContext, trackSelector)
-        videoView.player = player
-        val rtmpDataSourceFactory = RtmpDataSourceFactory()
-        val videoSource: MediaSource = ExtractorMediaSource.Factory(rtmpDataSourceFactory).createMediaSource(
-            Uri.parse("rtmp://82.156.194.22/$lessonId/livestream"))
-        player.prepare(videoSource)
-        player.playWhenReady = true
+        setContentView(R.layout.activity_lesson_start_student)
+        GiraffePlayer.play(applicationContext, VideoInfo("rtmp://82.156.194.22/$lessonId/livestream"))
+        val videoView: VideoView = findViewById(R.id.video_view)
+        videoView.setVideoPath("rtmp://82.156.194.22/$lessonId/livestream").player.start()
     }
 
+    //this below is for rtmp push
     override fun onRtmpConnecting(msg: String?) {
         Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
     }

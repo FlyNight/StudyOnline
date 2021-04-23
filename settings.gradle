@@ -1,6 +1,3 @@
-include ':oarplayer'
-include ':jjdxm-ijkplayer'
-include ':vitamio'
 include ':library'
 include ':app'
 rootProject.name = "StudyOnline"
