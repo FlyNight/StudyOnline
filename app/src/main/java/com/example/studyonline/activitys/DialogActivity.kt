@@ -1,12 +1,11 @@
-package com.example.studyonline
+package com.example.studyonline.activitys
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
+import com.example.studyonline.R
 
 class DialogActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {

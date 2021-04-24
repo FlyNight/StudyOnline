@@ -1,10 +1,8 @@
 package com.example.studyonline.data.holder
 
 import android.content.Context
-import android.util.Log
-import com.example.studyonline.MainActivity
+import com.example.studyonline.activitys.MainActivity
 import com.example.studyonline.data.bean.Outline
-import com.example.studyonline.data.bean.Task
 
 class OutlineHolder {
     companion object {

@@ -1,13 +1,13 @@
-package com.example.studyonline
+package com.example.studyonline.activitys
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.widget.TextView
-import android.widget.Toast
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
+import com.example.studyonline.R
 import com.example.studyonline.data.bean.LessonBean
 import java.io.Serializable
 

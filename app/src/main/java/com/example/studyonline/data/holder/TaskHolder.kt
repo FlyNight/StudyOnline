@@ -1,7 +1,7 @@
 package com.example.studyonline.data.holder
 
 import android.content.Context
-import com.example.studyonline.MainActivity.Companion.cn
+import com.example.studyonline.activitys.MainActivity.Companion.cn
 import com.example.studyonline.data.bean.Task
 
 class TaskHolder {

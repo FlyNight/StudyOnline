@@ -10,7 +10,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
 import com.example.studyonline.R
-import com.example.studyonline.SelectLessonActivity
+import com.example.studyonline.activitys.SelectLessonActivity
 import com.example.studyonline.data.bean.LessonBean
 
 class OptionLessonsAdapter(activity: Activity, private val resourceId: Int, data: List<LessonBean>): ArrayAdapter<LessonBean>(activity, resourceId, data) {

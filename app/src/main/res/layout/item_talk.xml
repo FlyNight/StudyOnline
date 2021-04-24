@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="70dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:layout_weight="0.4">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
+            android:id="@+id/name"
+            android:textColor="@color/blue_violet"
+            android:fontFamily="@font/lishu"
+            android:gravity="center"
+            android:textSize="20sp"
+            tools:ignore="NestedWeights" />
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.7"
+            android:id="@+id/time"
+            android:textColor="@color/blue"
+            android:fontFamily="@font/andika"
+            android:gravity="center_vertical"
+            android:textSize="15sp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.6">
+        <TextView
+            android:layout_marginStart="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/message"
+            android:textColor="@color/white"
+            android:fontFamily="@font/hanyilingxintijian"
+            android:gravity="center_vertical"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+</LinearLayout>

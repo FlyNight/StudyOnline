@@ -1,20 +1,12 @@
-package com.example.studyonline
+package com.example.studyonline.activitys
 
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.app.Dialog
-import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.View.VISIBLE
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
@@ -26,6 +18,7 @@ import androidx.navigation.ui.setupWithNavController
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.example.studyonline.R
 import com.example.studyonline.ui.login.LoginActivity
 import java.sql.Connection
 import java.sql.DriverManager
@@ -57,7 +50,8 @@ class MainActivity : AppCompatActivity() {
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow), drawerLayout)
+            R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
+        ), drawerLayout)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
@@ -86,9 +80,9 @@ class MainActivity : AppCompatActivity() {
             val userName: TextView = navHeaderRoot.findViewById(R.id.user_name)
             val btn: Button = findViewById(R.id.login_register)
             if (data != null) {
-                MainActivity.userName = data.getStringExtra("userName")!!
+                Companion.userName = data.getStringExtra("userName")!!
                 userId = data.getStringExtra("userId")!!
-                MainActivity.userIdentity = data.getStringExtra("userIdentity")!!
+                Companion.userIdentity = data.getStringExtra("userIdentity")!!
                 userName.text = data.getStringExtra("userName")
                 userIdentity.text = data.getStringExtra("userIdentity")
                 userIdentity.visibility = VISIBLE

@@ -18,7 +18,7 @@ class TaskAdapter(
     private var layoutInflater: LayoutInflater = LayoutInflater.from(context)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RViewHolder {
-        val view = layoutInflater.inflate(R.layout.task_item, parent, false)
+        val view = layoutInflater.inflate(R.layout.item_task, parent, false)
         return RViewHolder(view)
     }
 

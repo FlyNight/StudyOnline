@@ -2,7 +2,7 @@ package com.example.studyonline.data.holder
 
 import android.content.Context
 import android.util.Log
-import com.example.studyonline.MainActivity.Companion.cn
+import com.example.studyonline.activitys.MainActivity.Companion.cn
 import com.example.studyonline.data.bean.LessonBean
 
 class OptionalLessonsHolder {

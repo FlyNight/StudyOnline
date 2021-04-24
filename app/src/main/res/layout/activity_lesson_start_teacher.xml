@@ -5,9 +5,48 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/teal_200"
-    tools:context=".LessonStartActivity">
+    tools:context=".activitys.LessonStartActivity">
     <net.ossrs.yasea.SrsCameraView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/live_video" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true" >
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
+            android:id="@+id/talk_list" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2" >
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="0.7"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="15dp"
+                android:layout_height="match_parent"
+                android:id="@+id/talk_edit"
+                android:hint="@string/todo"
+                android:autofillHints="@string/todo"
+                android:background="@drawable/input_drawable"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="15dp"
+                android:layout_height="match_parent"
+                android:id="@+id/talk_send"
+                android:text="@string/todo"
+                android:background="@drawable/btn_round" />
+        </LinearLayout>
+    </LinearLayout>
 </RelativeLayout>

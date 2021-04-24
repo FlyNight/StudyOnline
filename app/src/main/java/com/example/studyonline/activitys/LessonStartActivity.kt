@@ -1,16 +1,29 @@
-package com.example.studyonline
+package com.example.studyonline.activitys
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
-import android.view.View
+import android.os.Handler
+import android.os.Message
+import android.os.PowerManager
+import android.text.Editable
+import android.util.Log
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ListView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.studyonline.R
+import com.example.studyonline.data.adapter.TalkAdapter
 import com.example.studyonline.data.bean.Identity
 import com.example.studyonline.data.bean.LessonBean
+import com.example.studyonline.data.bean.TalkBean
 import com.github.faucamp.simplertmp.RtmpHandler
 import com.seu.magicfilter.utils.MagicFilterType
 import net.ossrs.yasea.SrsCameraView
@@ -23,6 +36,9 @@ import tcking.github.com.giraffeplayer2.VideoView
 import java.io.IOException
 import java.io.Serializable
 import java.net.SocketException
+import java.sql.Statement
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class LessonStartActivity :
@@ -32,24 +48,75 @@ class LessonStartActivity :
     SrsEncodeHandler.SrsEncodeListener {
     lateinit var lessonId: String
     lateinit var lessonName: String
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requestPermission()
-        val se: Serializable? = intent.getSerializableExtra("lesson")
-        if (se is LessonBean) {
-            val lesson: LessonBean = se
-            lessonId = lesson.id.toString()
-            lessonName = lesson.name
+    lateinit var srsPublisher: SrsPublisher
+    @SuppressLint("SimpleDateFormat")
+    private val handler = Handler() {
+        when (it.what) {
+            1 -> {
+                var adapter: TalkAdapter? = null
+                val t1 = Thread {
+                    val data: ArrayList<TalkBean> = ArrayList()
+                    val resultSet =
+                        ps.executeQuery("SELECT * FROM talks WHERE lesson_id = $lessonId")
+                    while (resultSet.next()) {
+                        data.add(
+                            TalkBean(
+                                resultSet.getString("lesson_id"),
+                                resultSet.getString("user_name"),
+                                resultSet.getString("current_time_"),
+                                resultSet.getString("message")
+                            )
+                        )
+                    }
+                    adapter = TalkAdapter(applicationContext, data)
+                }
+                if (!ps.isClosed) {
+                    t1.start()
+                    t1.join()
+                    val linearLayoutManager = LinearLayoutManager(applicationContext)
+                    talkList.layoutManager = linearLayoutManager
+                    talkList.adapter = adapter
+                }
+            }
+            2 -> {
+                message.isEnabled = false
+                val t2 = Thread {
+                    val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
+                    val time: String = simpleDateFormat.format(Date(System.currentTimeMillis()))
+                    val sql =
+                        "INSERT INTO talks(lesson_id, user_name, current_time_, message) VALUES (?,?,?,?)"
+                    val psmt = MainActivity.cn.prepareStatement(sql)
+                    psmt.setString(1, lessonId)
+                    psmt.setString(2, MainActivity.userName)
+                    psmt.setString(3, time)
+                    psmt.setString(4, message.text.toString())
+                    psmt.executeUpdate()
+                    psmt.close()
+                }
+                if (message.text.toString() != "") {
+                    t2.start()
+                    t2.join()
+                    message.text = null
+                    message.hint = resources.getString(R.string.todo)
+                    message.isEnabled = true
+                } else {
+                    Toast.makeText(applicationContext, "发送内容为空", Toast.LENGTH_SHORT).show()
+                }
+            }
+            3 -> {
+                val t3 = Thread {
+                    ps.execute("DELETE FROM  talks WHERE lesson_id = $lessonId")
+                }
+                t3.start()
+                t3.join()
+            }
         }
-        if (MainActivity.userIdentity == Identity.TEACHER.IDENTITY) {
-            setContentView(R.layout.activity_lesson_start_teacher)
-            initTeacherView()
-        }
-        else {
-            initStudentView()
-
-        }
+        true
     }
+
+    private lateinit var  ps: Statement
+    private lateinit var talkList: RecyclerView
+    private lateinit var message: EditText
 
     private fun requestPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -57,7 +124,8 @@ class LessonStartActivity :
             ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
             != PackageManager.PERMISSION_GRANTED ||
             ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
+            != PackageManager.PERMISSION_GRANTED
+        ) {
             ActivityCompat.requestPermissions(
                 this,
                 arrayOf(
@@ -69,9 +137,34 @@ class LessonStartActivity :
         }
     }
 
-    lateinit var srsPublisher: SrsPublisher
+    @SuppressLint("WakelockTimeout")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ps = MainActivity.cn.createStatement()
+        super.onCreate(savedInstanceState)
+        requestPermission()
+        val se: Serializable? = intent.getSerializableExtra("lesson")
+        if (se is LessonBean) {
+            val lesson: LessonBean = se
+            lessonId = lesson.id.toString()
+            lessonName = lesson.name
+        }
+        if (MainActivity.userIdentity == Identity.TEACHER.IDENTITY) {
+            initTeacherView()
+        } else {
+            initStudentView()
+
+        }
+        val powerManager: PowerManager = getSystemService(POWER_SERVICE) as PowerManager;
+        val wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "myTag:wakeLock")
+        wakeLock.acquire()
+    }
+
     private fun initTeacherView() {
+        val message = Message()
+        message.what = 3
+        handler.sendMessage(message)
         setContentView(R.layout.activity_lesson_start_teacher)
+        initTalkView()
         val cameraView: SrsCameraView = findViewById(R.id.live_video)
         srsPublisher = SrsPublisher(cameraView)
         srsPublisher.setEncodeHandler(SrsEncodeHandler(this))
@@ -90,12 +183,41 @@ class LessonStartActivity :
         srsPublisher.startPublish("rtmp://82.156.194.22/$lessonId/livestream")
     }
 
-    @SuppressLint("InflateParams")
     private fun initStudentView() {
         setContentView(R.layout.activity_lesson_start_student)
-        GiraffePlayer.play(applicationContext, VideoInfo("rtmp://82.156.194.22/$lessonId/livestream"))
+        GiraffePlayer.play(
+            applicationContext,
+            VideoInfo("rtmp://82.156.194.22/$lessonId/livestream")
+        )
         val videoView: VideoView = findViewById(R.id.video_view)
         videoView.setVideoPath("rtmp://82.156.194.22/$lessonId/livestream").player.start()
+    }
+
+    private fun initTalkView() {
+        talkList = findViewById(R.id.talk_list)
+        message = findViewById(R.id.talk_edit)
+        runOnUiThread {
+            Timer().scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    val message = Message()
+                    message.what = 1
+                    handler.sendMessage(message)
+                }
+            }, 0, 3000)
+
+        }
+
+        val send: Button = findViewById(R.id.talk_send)
+        send.setOnClickListener {
+            val message = Message()
+            message.what = 2
+            handler.sendMessage(message)
+        }
+    }
+
+    override fun onDestroy() {
+        ps.close()
+        super.onDestroy()
     }
 
     //this below is for rtmp push

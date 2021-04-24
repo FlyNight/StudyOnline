@@ -83,7 +83,7 @@ class PlaceholderFragment : Fragment() {
             }
         }
         val adapter =
-            activity?.let { LessonScheduleAdapter(it, R.layout.lesson_schedule_item, LessonBean.testData1[index - 1].outline) }
+            activity?.let { LessonScheduleAdapter(it, R.layout.item_lesson_schedule, LessonBean.testData1[index - 1].outline) }
         lessonScheduleList.adapter = adapter
     }
 

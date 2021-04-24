@@ -14,9 +14,8 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.studyonline.MainActivity
+import com.example.studyonline.activitys.MainActivity
 import com.example.studyonline.R
-import com.example.studyonline.data.LoginRepository
 import com.example.studyonline.data.adapter.LessonsAdapter
 import com.example.studyonline.data.bean.LessonBean
 import com.example.studyonline.data.holder.OptionalLessonsHolder
@@ -40,7 +39,7 @@ class GalleryFragment : Fragment() {
     inner class TimeChangedReceiver(): BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val listView: ListView? = view?.findViewById(R.id.lesson_list)
-            val adapter = activity?.let { LessonsAdapter(it, R.layout.lesson_item, LessonBean.testData1) }
+            val adapter = activity?.let { LessonsAdapter(it, R.layout.item_lesson, LessonBean.testData1) }
             if (listView != null) {
                 listView.adapter = adapter
             }
@@ -69,7 +68,7 @@ class GalleryFragment : Fragment() {
             adapter = activity?.let {
                 context?.let { it1 -> OptionalLessonsHolder.getDataFromDatabase(it1, MainActivity.userId) }
                     ?.let { it2 ->
-                        LessonsAdapter(it, R.layout.lesson_item,
+                        LessonsAdapter(it, R.layout.item_lesson,
                             it2
                         )
                     }
