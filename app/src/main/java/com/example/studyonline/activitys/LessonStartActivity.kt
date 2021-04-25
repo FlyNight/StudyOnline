@@ -3,7 +3,6 @@ package com.example.studyonline.activitys
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.os.Handler
 import android.os.Message
 import android.os.PowerManager
 import android.view.SurfaceView
-import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast

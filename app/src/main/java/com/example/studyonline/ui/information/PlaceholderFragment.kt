@@ -11,20 +11,26 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studyonline.R
+import com.example.studyonline.activitys.LessonInformationActivity.Companion.lessonId
 import com.example.studyonline.activitys.MainActivity
 import com.example.studyonline.data.adapter.LessonScheduleAdapter
 import com.example.studyonline.data.adapter.TaskAdapter
 import com.example.studyonline.data.StepSTL
 import com.example.studyonline.data.bean.LessonBean
 import com.github.mikephil.charting.charts.RadarChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.RadarData
 import com.github.mikephil.charting.data.RadarDataSet
 import com.github.mikephil.charting.data.RadarEntry
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration
 import com.orient.me.widget.rv.itemdocration.timeline.TimeLine
 import com.orient.me.widget.rv.layoutmanager.DoubleSideLayoutManager
+import java.io.Serializable
 
 /**
  * A placeholder fragment containing a simple view.
@@ -47,6 +53,8 @@ class PlaceholderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_lesson_information, container, false)
+
+
         val lessonInformationSchedule: View = root.findViewById(R.id.lesson_schedule)
         val lessonInformationTask: View = root.findViewById(R.id.lesson_task)
         val lessonInformationDiscuss: View = root.findViewById(R.id.lesson_discuss)
@@ -113,18 +121,38 @@ class PlaceholderFragment : Fragment() {
         radarChart.webColorInner = Color.BLACK
         radarChart.webColor = Color.BLACK
         radarChart.webAlpha = 50
-
+        radarChart.description.text = "${MainActivity.userName} 的个人评价"
+        radarChart.description.textSize = 15f
         val xAxis: XAxis = radarChart.xAxis
         xAxis.setLabelCount(4, true)
         xAxis.axisMaximum = 4f
         xAxis.axisMinimum = 0f
-        xAxis.textSize = 20f
+        xAxis.textSize = 12f
         xAxis.textColor = colors[1]
+        xAxis.valueFormatter = object : ValueFormatter() {
+            val strings = listOf("章节完成度", "作业完成度", "章节得分", "作业得分", "教师评价")
+            override fun getFormattedValue(value: Float): String {
+                return strings[value.toInt()]
+            }
+        }
 
-        val ps= MainActivity.cn.createStatement()
-        val resultSet = ps.executeQuery("select * from evaluations_users_lessons where " +
-                "user_id = ${MainActivity.userId} and ")
-
+        val list: ArrayList<RadarEntry> =  ArrayList();
+        val t1 = Thread {
+            val ps= MainActivity.cn.createStatement()
+            var resultSet = ps.executeQuery("select * from evaluations_users_lessons where " +
+                    "user_id = ${MainActivity.id} and lesson_id = $lessonId")
+            resultSet.next()
+            val evaluationId = resultSet.getInt("evaluation_id")
+            resultSet = ps.executeQuery("select * from evaluation where evaluation_id = $evaluationId")
+            resultSet.next()
+            list.add((RadarEntry(resultSet.getInt("outline_done").toFloat())))
+            list.add((RadarEntry(resultSet.getInt("task_done").toFloat())))
+            list.add((RadarEntry(resultSet.getInt("average_lesson_done").toFloat())))
+            list.add((RadarEntry(resultSet.getInt("task_score_done").toFloat())))
+            list.add((RadarEntry(resultSet.getInt("teacher_done").toFloat())))
+        }
+        t1.start()
+        t1.join()
         val yAxis: YAxis = radarChart.yAxis
         yAxis.setLabelCount(5, true);
         yAxis.axisMinimum = 0f;
@@ -133,17 +161,14 @@ class PlaceholderFragment : Fragment() {
         yAxis.textColor = Color.RED;
 
         radarChart.setDrawWeb(true);
-        radarChart.description.isEnabled = false;
+        radarChart.description.isEnabled = true;
         radarChart.legend.isEnabled = false;
 
-        val list: ArrayList<RadarEntry> =  ArrayList();
-        for (i in 0..4) {
-            list.add(RadarEntry( ((Math.random() * 100).toFloat())))
-        }
         val set =  RadarDataSet(list, "Petterp")
 
         //禁用标签
-        set.setDrawValues(false);
+        set.setDrawValues(true);
+        set.valueTextSize = 15f
         //设置填充颜色
         set.fillColor = Color.BLUE;
         //设置填充透明度
@@ -160,7 +185,6 @@ class PlaceholderFragment : Fragment() {
         set.highlightCircleInnerRadius = 20f;
         //设置点击之后标签圆形外围内圆的半径
         set.highlightCircleOuterRadius = 10f;
-
 
         val data = RadarData(set);
         radarChart.data = data;

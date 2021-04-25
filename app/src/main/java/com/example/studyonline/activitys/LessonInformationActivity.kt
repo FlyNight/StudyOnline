@@ -10,6 +10,7 @@ import com.example.studyonline.R
 import com.example.studyonline.data.bean.LessonBean
 import com.example.studyonline.ui.information.SectionsPagerAdapter
 import java.io.Serializable
+import kotlin.properties.Delegates
 
 class LessonInformationActivity : AppCompatActivity() {
 
@@ -17,7 +18,6 @@ class LessonInformationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lesson_information)
         val se: Serializable? = intent.getSerializableExtra("lesson")
-        var lessonId = 0
         if(se is LessonBean) {
             val lesson: LessonBean = se
             lessonId = lesson.id
@@ -33,5 +33,9 @@ class LessonInformationActivity : AppCompatActivity() {
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
         }
+    }
+
+    companion object {
+        var lessonId by Delegates.notNull<Int>()
     }
 }
