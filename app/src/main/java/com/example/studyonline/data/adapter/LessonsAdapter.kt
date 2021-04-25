@@ -63,7 +63,7 @@ class LessonsAdapter(activity: Activity, private val resourceId: Int, data: List
                     time = time.substring(0,9) + "7"
                 }
             }
-            if (time == lesson.time) {
+            if (time != lesson.time) {
                 lessonInformation.visibility = View.VISIBLE
                 lessonStart.visibility = View.GONE
             } else {

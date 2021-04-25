@@ -60,6 +60,7 @@ class LoginActivity : AppCompatActivity() {
             }
             if (loginResult.success != null) {
                 updateUiWithUser(loginResult.success)
+                intent.putExtra("id",loginResult.success.id)
                 intent.putExtra("userId",loginResult.success.displayId)
                 intent.putExtra("userName",loginResult.success.displayName)
                 intent.putExtra("userIdentity",loginResult.success.displayIdentity.IDENTITY)

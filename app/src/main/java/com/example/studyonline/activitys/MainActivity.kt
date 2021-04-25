@@ -22,6 +22,7 @@ import com.example.studyonline.R
 import com.example.studyonline.ui.login.LoginActivity
 import java.sql.Connection
 import java.sql.DriverManager
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
@@ -82,6 +83,7 @@ class MainActivity : AppCompatActivity() {
             if (data != null) {
                 Companion.userName = data.getStringExtra("userName")!!
                 userId = data.getStringExtra("userId")!!
+                id = data.getIntExtra("id",-1)
                 Companion.userIdentity = data.getStringExtra("userIdentity")!!
                 userName.text = data.getStringExtra("userName")
                 userIdentity.text = data.getStringExtra("userIdentity")
@@ -95,6 +97,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         lateinit var userName: String
         var userId : String = "-1"
+        var id by Delegates.notNull<Int>()
         lateinit var userIdentity: String
         lateinit var cn: Connection
         private fun mysqlConnect() {

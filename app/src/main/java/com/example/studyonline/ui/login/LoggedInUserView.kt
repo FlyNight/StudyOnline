@@ -8,6 +8,7 @@ import com.example.studyonline.data.bean.Identity
 data class LoggedInUserView(
     val displayName: String,
     val displayId: String,
+    val id: Int,
     val displayIdentity: Identity
     //... other data fields that may be accessible to the UI
 )

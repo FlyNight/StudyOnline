@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studyonline.R
+import com.example.studyonline.activitys.MainActivity
 import com.example.studyonline.data.adapter.LessonScheduleAdapter
 import com.example.studyonline.data.adapter.TaskAdapter
 import com.example.studyonline.data.StepSTL
@@ -120,6 +121,10 @@ class PlaceholderFragment : Fragment() {
         xAxis.textSize = 20f
         xAxis.textColor = colors[1]
 
+        val ps= MainActivity.cn.createStatement()
+        val resultSet = ps.executeQuery("select * from evaluations_users_lessons where " +
+                "user_id = ${MainActivity.userId} and ")
+
         val yAxis: YAxis = radarChart.yAxis
         yAxis.setLabelCount(5, true);
         yAxis.axisMinimum = 0f;
@@ -135,7 +140,7 @@ class PlaceholderFragment : Fragment() {
         for (i in 0..4) {
             list.add(RadarEntry( ((Math.random() * 100).toFloat())))
         }
-        val set: RadarDataSet =  RadarDataSet(list, "Petterp")
+        val set =  RadarDataSet(list, "Petterp")
 
         //禁用标签
         set.setDrawValues(false);
@@ -157,7 +162,7 @@ class PlaceholderFragment : Fragment() {
         set.highlightCircleOuterRadius = 10f;
 
 
-        val data: RadarData = RadarData(set);
+        val data = RadarData(set);
         radarChart.data = data;
         radarChart.invalidate();
     }
