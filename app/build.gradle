@@ -64,15 +64,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'com.github.PhilJay:MPAndroidChart:3.1.0'
     implementation 'com.orient:Orient-Ui:1.0.0'
-    implementation 'com.google.android.exoplayer:exoplayer:2.7.3'
-    implementation 'com.google.android.exoplayer:extension-rtmp:2.7.3'
-
-    implementation 'com.github.tcking:giraffeplayer2:0.1.25'
-
-    implementation 'com.github.tcking:ijkplayer-arm64:0.8.8'
-    implementation 'com.github.tcking:ijkplayer-armv5:0.8.8'
-    implementation 'com.github.tcking:ijkplayer-x86:0.8.8'
-    implementation 'com.github.tcking:ijkplayer-x86_64:0.8.8'
+    implementation  'com.github.pedroSG94.vlc-example-streamplayer:pedrovlc:2.5.14v3'
 
     implementation files('libs/mysql-connector-java-5.1.49.jar')
     implementation project(':library')

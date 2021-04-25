@@ -3,17 +3,17 @@ package com.example.studyonline.activitys
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.os.PowerManager
-import android.text.Editable
-import android.util.Log
+import android.view.SurfaceView
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.EditText
-import android.widget.ListView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -25,14 +25,13 @@ import com.example.studyonline.data.bean.Identity
 import com.example.studyonline.data.bean.LessonBean
 import com.example.studyonline.data.bean.TalkBean
 import com.github.faucamp.simplertmp.RtmpHandler
+import com.pedro.vlc.VlcListener
+import com.pedro.vlc.VlcVideoLibrary
 import com.seu.magicfilter.utils.MagicFilterType
 import net.ossrs.yasea.SrsCameraView
 import net.ossrs.yasea.SrsEncodeHandler
 import net.ossrs.yasea.SrsPublisher
 import net.ossrs.yasea.SrsRecordHandler
-import tcking.github.com.giraffeplayer2.GiraffePlayer
-import tcking.github.com.giraffeplayer2.VideoInfo
-import tcking.github.com.giraffeplayer2.VideoView
 import java.io.IOException
 import java.io.Serializable
 import java.net.SocketException
@@ -41,11 +40,11 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class LessonStartActivity :
+class LessonTeacherActivity :
     Activity(),
     RtmpHandler.RtmpListener,
     SrsRecordHandler.SrsRecordListener,
-    SrsEncodeHandler.SrsEncodeListener {
+    SrsEncodeHandler.SrsEncodeListener{
     lateinit var lessonId: String
     lateinit var lessonName: String
     lateinit var srsPublisher: SrsPublisher
@@ -148,12 +147,7 @@ class LessonStartActivity :
             lessonId = lesson.id.toString()
             lessonName = lesson.name
         }
-        if (MainActivity.userIdentity == Identity.TEACHER.IDENTITY) {
-            initTeacherView()
-        } else {
-            initStudentView()
-
-        }
+        initTeacherView()
         val powerManager: PowerManager = getSystemService(POWER_SERVICE) as PowerManager;
         val wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "myTag:wakeLock")
         wakeLock.acquire()
@@ -163,7 +157,7 @@ class LessonStartActivity :
         val message = Message()
         message.what = 3
         handler.sendMessage(message)
-        setContentView(R.layout.activity_lesson_start_teacher)
+        setContentView(R.layout.activity_lesson_teacher)
         initTalkView()
         val cameraView: SrsCameraView = findViewById(R.id.live_video)
         srsPublisher = SrsPublisher(cameraView)
@@ -181,16 +175,6 @@ class LessonStartActivity :
         srsPublisher.startCamera()
         srsPublisher.switchToHardEncoder()
         srsPublisher.startPublish("rtmp://82.156.194.22/$lessonId/livestream")
-    }
-
-    private fun initStudentView() {
-        setContentView(R.layout.activity_lesson_start_student)
-        GiraffePlayer.play(
-            applicationContext,
-            VideoInfo("rtmp://82.156.194.22/$lessonId/livestream")
-        )
-        val videoView: VideoView = findViewById(R.id.video_view)
-        videoView.setVideoPath("rtmp://82.156.194.22/$lessonId/livestream").player.start()
     }
 
     private fun initTalkView() {
@@ -332,5 +316,4 @@ class LessonStartActivity :
             //
         }
     }
-
 }
