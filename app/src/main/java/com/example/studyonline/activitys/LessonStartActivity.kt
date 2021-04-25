@@ -40,14 +40,146 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 
-class LessonTeacherActivity :
+class LessonStartActivity :
     Activity(),
     RtmpHandler.RtmpListener,
     SrsRecordHandler.SrsRecordListener,
-    SrsEncodeHandler.SrsEncodeListener{
+    SrsEncodeHandler.SrsEncodeListener,
+    VlcListener{
     lateinit var lessonId: String
     lateinit var lessonName: String
     lateinit var srsPublisher: SrsPublisher
+    lateinit var vlcVideoLibrary: VlcVideoLibrary
+
+
+    private lateinit var  ps: Statement
+    private lateinit var talkList: RecyclerView
+    private lateinit var message: EditText
+    private lateinit var delayToShow: Button
+    private val options = arrayOf(":fullscreen")
+
+    @SuppressLint("WakelockTimeout")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        ps = MainActivity.cn.createStatement()
+        super.onCreate(savedInstanceState)
+        val se: Serializable? = intent.getSerializableExtra("lesson")
+        if (se is LessonBean) {
+            val lesson: LessonBean = se
+            lessonId = lesson.id.toString()
+            lessonName = lesson.name
+        }
+        requestPermission()
+        val powerManager: PowerManager = getSystemService(POWER_SERVICE) as PowerManager;
+        val wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "myTag:wakeLock")
+        wakeLock.acquire()
+        if (MainActivity.userIdentity == Identity.TEACHER.IDENTITY) {
+            initTeacherView()
+        } else if (MainActivity.userIdentity == Identity.STUDENT.IDENTITY) {
+            initStudentView()
+        }
+        initTalkView()
+    }
+
+    private fun requestPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
+            != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.CAMERA,
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ), 100
+            )
+        }
+    }
+
+    private fun initTeacherView() {
+        val message = Message()
+        message.what = 3
+        handler.sendMessage(message)
+        setContentView(R.layout.activity_lesson_teacher)
+        val cameraView: SrsCameraView = findViewById(R.id.live_video)
+        srsPublisher = SrsPublisher(cameraView)
+        srsPublisher.setEncodeHandler(SrsEncodeHandler(this))
+        srsPublisher.setRtmpHandler(RtmpHandler(this))
+        srsPublisher.setRecordHandler(SrsRecordHandler(this))
+        if (!cameraView.isEnabled) {
+            Toast.makeText(applicationContext, "No Camera Found", Toast.LENGTH_SHORT).show()
+            return
+        }
+        srsPublisher.setPreviewResolution(1280, 720)
+        srsPublisher.setOutputResolution(720, 1280)
+        srsPublisher.switchCameraFilter(MagicFilterType.BEAUTY);
+        srsPublisher.setVideoHDMode()
+        srsPublisher.startCamera()
+        srsPublisher.startAudio()
+        srsPublisher.switchToHardEncoder()
+        srsPublisher.startPublish("rtmp://82.156.194.22/$lessonId/livestream")
+    }
+
+    private fun initStudentView() {
+        setContentView(R.layout.activity_lesson_student)
+        val surfaceView: SurfaceView = findViewById(R.id.live_video)
+        delayToShow = findViewById(R.id.delay_to_show)
+        delayToShow.setOnClickListener {
+            if (!vlcVideoLibrary.isPlaying) {
+                vlcVideoLibrary.play("rtmp://82.156.194.22/$lessonId/livestream")
+            } else {
+                vlcVideoLibrary.stop()
+            }
+        }
+        vlcVideoLibrary = VlcVideoLibrary(this, this, surfaceView)
+        vlcVideoLibrary.setOptions(listOf(*options))
+        Thread {
+            Thread.sleep(500)
+            val message = Message()
+            message.what = 4
+            handler.sendMessage(message)
+        }.start()
+    }
+
+    private fun initTalkView() {
+        talkList = findViewById(R.id.talk_list)
+        message = findViewById(R.id.talk_edit)
+        runOnUiThread {
+            Timer().scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    val message = Message()
+                    message.what = 1
+                    handler.sendMessage(message)
+                }
+            }, 0, 3000)
+
+        }
+
+        val send: Button = findViewById(R.id.talk_send)
+        send.setOnClickListener {
+            val message = Message()
+            message.what = 2
+            handler.sendMessage(message)
+        }
+    }
+
+    override fun onDestroy() {
+        ps.close()
+        if (MainActivity.userIdentity == Identity.TEACHER.IDENTITY) {
+            srsPublisher.stopPublish()
+            srsPublisher.stopAudio()
+            srsPublisher.stopCamera()
+
+        }
+        else if(MainActivity.userIdentity == Identity.STUDENT.IDENTITY) {
+            vlcVideoLibrary.stop()
+        }
+        super.onDestroy()
+    }
+
     @SuppressLint("SimpleDateFormat")
     private val handler = Handler() {
         when (it.what) {
@@ -109,99 +241,11 @@ class LessonTeacherActivity :
                 t3.start()
                 t3.join()
             }
+            4 -> {
+                delayToShow.performClick()
+            }
         }
         true
-    }
-
-    private lateinit var  ps: Statement
-    private lateinit var talkList: RecyclerView
-    private lateinit var message: EditText
-
-    private fun requestPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-            != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO)
-            != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-                ), 100
-            )
-        }
-    }
-
-    @SuppressLint("WakelockTimeout")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        ps = MainActivity.cn.createStatement()
-        super.onCreate(savedInstanceState)
-        requestPermission()
-        val se: Serializable? = intent.getSerializableExtra("lesson")
-        if (se is LessonBean) {
-            val lesson: LessonBean = se
-            lessonId = lesson.id.toString()
-            lessonName = lesson.name
-        }
-        initTeacherView()
-        val powerManager: PowerManager = getSystemService(POWER_SERVICE) as PowerManager;
-        val wakeLock = powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "myTag:wakeLock")
-        wakeLock.acquire()
-    }
-
-    private fun initTeacherView() {
-        val message = Message()
-        message.what = 3
-        handler.sendMessage(message)
-        setContentView(R.layout.activity_lesson_teacher)
-        initTalkView()
-        val cameraView: SrsCameraView = findViewById(R.id.live_video)
-        srsPublisher = SrsPublisher(cameraView)
-        srsPublisher.setEncodeHandler(SrsEncodeHandler(this))
-        srsPublisher.setRtmpHandler(RtmpHandler(this))
-        srsPublisher.setRecordHandler(SrsRecordHandler(this))
-        if (!cameraView.isEnabled) {
-            Toast.makeText(applicationContext, "No Camera Found", Toast.LENGTH_SHORT).show()
-            return
-        }
-        srsPublisher.setPreviewResolution(1280, 720)
-        srsPublisher.setOutputResolution(720, 1280)
-        srsPublisher.switchCameraFilter(MagicFilterType.BEAUTY);
-        srsPublisher.setVideoHDMode()
-        srsPublisher.startCamera()
-        srsPublisher.switchToHardEncoder()
-        srsPublisher.startPublish("rtmp://82.156.194.22/$lessonId/livestream")
-    }
-
-    private fun initTalkView() {
-        talkList = findViewById(R.id.talk_list)
-        message = findViewById(R.id.talk_edit)
-        runOnUiThread {
-            Timer().scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    val message = Message()
-                    message.what = 1
-                    handler.sendMessage(message)
-                }
-            }, 0, 3000)
-
-        }
-
-        val send: Button = findViewById(R.id.talk_send)
-        send.setOnClickListener {
-            val message = Message()
-            message.what = 2
-            handler.sendMessage(message)
-        }
-    }
-
-    override fun onDestroy() {
-        ps.close()
-        super.onDestroy()
     }
 
     //this below is for rtmp push
@@ -315,5 +359,15 @@ class LessonTeacherActivity :
         } catch (e1: Exception) {
             //
         }
+    }
+
+    //rtmp pull
+    override fun onComplete() {
+        Toast.makeText(this, "Playing", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onError() {
+        Toast.makeText(this, "Error, make sure your endpoint is correct", Toast.LENGTH_SHORT).show()
+        vlcVideoLibrary.stop()
     }
 }

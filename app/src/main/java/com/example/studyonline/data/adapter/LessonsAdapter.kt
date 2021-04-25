@@ -11,11 +11,8 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
 import com.example.studyonline.activitys.LessonInformationActivity
-import com.example.studyonline.activitys.LessonTeacherActivity
+import com.example.studyonline.activitys.LessonStartActivity
 import com.example.studyonline.R
-import com.example.studyonline.activitys.LessonStudentActivity
-import com.example.studyonline.activitys.MainActivity
-import com.example.studyonline.data.bean.Identity
 import com.example.studyonline.data.bean.LessonBean
 import java.util.*
 
@@ -82,22 +79,12 @@ class LessonsAdapter(activity: Activity, private val resourceId: Int, data: List
                 )
             }
             lessonStart.setOnClickListener {
-                if (MainActivity.userIdentity == Identity.TEACHER.IDENTITY) {
-                    context.startActivity(
-                        Intent(
-                            context,
-                            LessonTeacherActivity::class.java
-                        ).putExtra("lesson", lesson)
-                    )
-                }
-                else if (MainActivity.userIdentity == Identity.STUDENT.IDENTITY) {
-                    context.startActivity(
-                        Intent(
-                            context,
-                            LessonStudentActivity::class.java
-                        ).putExtra("lesson", lesson)
-                    )
-                }
+                context.startActivity(
+                    Intent(
+                        context,
+                        LessonStartActivity::class.java
+                    ).putExtra("lesson", lesson)
+                )
             }
         }
         return view

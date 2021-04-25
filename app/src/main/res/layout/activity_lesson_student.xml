@@ -4,35 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activitys.LessonStudentActivity">
-    <SurfaceView
-        android:id="@+id/surfaceView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
-
-    <EditText
-        android:id="@+id/et_endpoint"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        android:hint="@string/rtmp"
-        android:textColor="@color/white"
-        android:textColorHint="@color/white"
-        android:inputType="textUri"
-        android:gravity="center"
-        />
-
+    tools:context=".activitys.LessonStartActivity">
     <Button
-        android:id="@+id/b_start_stop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/start_player"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_margin="20dp"
-        />
+        android:id="@+id/delay_to_show"
+        android:visibility="gone"/>
+    <SurfaceView
+        android:id="@+id/live_video"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:orientation="vertical"
+        android:layout_alignParentBottom="true" >
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"
+            android:id="@+id/talk_list" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2" >
+            <EditText
+                android:layout_width="0dp"
+                android:layout_weight="0.7"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="15dp"
+                android:layout_height="match_parent"
+                android:id="@+id/talk_edit"
+                android:hint="@string/todo"
+                android:autofillHints="@string/todo"
+                android:background="@drawable/input_drawable"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="0.3"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginEnd="15dp"
+                android:layout_height="match_parent"
+                android:id="@+id/talk_send"
+                android:text="@string/todo"
+                android:background="@drawable/btn_round" />
+        </LinearLayout>
+    </LinearLayout>
 
 </RelativeLayout>

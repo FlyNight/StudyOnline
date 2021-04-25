@@ -20,21 +20,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StudyOnline"
         tools:replace="android:label">
-        <activity android:name=".activitys.LessonStudentActivity"></activity>
 
-        <service
-            android:name=".service.TimeService"
-            android:enabled="true"
-            android:exported="true" />
 
-        <activity
-            android:name="io.vov.vitamio.activity.InitActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:launchMode="singleTop"
-            android:theme="@android:style/Theme.NoTitleBar"
-            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity android:name=".ui.login.RegisterOrResetActivity" />
-        <activity android:name=".activitys.LessonTeacherActivity" />
+        <activity android:name=".activitys.LessonStartActivity" />
         <activity
             android:name=".activitys.LessonInformationActivity"
             android:label="@string/title_activity_lesson_information"
