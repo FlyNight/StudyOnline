@@ -9,7 +9,6 @@ import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studyonline.R
@@ -20,6 +19,7 @@ import com.example.studyonline.data.adapter.TaskAdapter
 import com.example.studyonline.data.StepSTL
 import com.example.studyonline.data.adapter.DetailAdapter
 import com.example.studyonline.data.bean.LessonBean
+import com.github.javiersantos.bottomdialogs.BottomDialog
 import com.github.mikephil.charting.charts.RadarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
@@ -33,7 +33,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration
 import com.orient.me.widget.rv.itemdocration.timeline.TimeLine
 import com.orient.me.widget.rv.layoutmanager.DoubleSideLayoutManager
-import ir.android.bottomdialog.BottomDialog
+
 
 /**
  * A placeholder fragment containing a simple view.
@@ -42,7 +42,7 @@ class PlaceholderFragment : Fragment() {
 
     private lateinit var pageViewModel: PageViewModel
 
-    val colors = arrayOf(Color.RED, Color.BLACK, Color.GREEN, Color.BLUE, Color.GRAY)
+    private val colors = arrayOf(Color.RED, Color.BLACK, Color.GREEN, Color.BLUE, Color.GRAY)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,7 +95,7 @@ class PlaceholderFragment : Fragment() {
             }
         }
         val adapter =
-            activity?.let { LessonScheduleAdapter(it, R.layout.item_lesson_schedule, LessonBean.testData1[index - 1].outline) }
+            activity?.let { LessonScheduleAdapter(it, R.layout.item_schedule, LessonBean.testData1[index - 1].outline) }
         lessonScheduleList.adapter = adapter
     }
 
@@ -173,9 +173,9 @@ class PlaceholderFragment : Fragment() {
                 dataContainer.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,800)
                 dataContainer.layoutManager = layoutManager
                 dataContainer.adapter = DetailAdapter(context!!, h!!.x.toInt(),MainActivity.id, lessonId)
-                context?.let { BottomDialog.Builder(it)
+                BottomDialog.Builder(context!!)
                     .setCustomView(dataContainer)
-                    .show()}
+                    .show()
             }
 
             override fun onNothingSelected() {

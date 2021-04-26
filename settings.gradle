@@ -1,4 +1,3 @@
-include ':bottomDialog'
 include ':library'
 include ':app'
 rootProject.name = "StudyOnline"

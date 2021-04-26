@@ -6,6 +6,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
+import butterknife.BindView
 import com.example.studyonline.R
 import com.example.studyonline.data.bean.LessonBean
 import com.example.studyonline.ui.information.SectionsPagerAdapter
@@ -13,7 +14,6 @@ import java.io.Serializable
 import kotlin.properties.Delegates
 
 class LessonInformationActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lesson_information)
@@ -22,11 +22,29 @@ class LessonInformationActivity : AppCompatActivity() {
             val lesson: LessonBean = se
             lessonId = lesson.id
         }
-        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager, lessonId)
-        val viewPager: ViewPager = findViewById(R.id.view_pager)
-        viewPager.adapter = sectionsPagerAdapter
+
         val tabs: TabLayout = findViewById(R.id.tabs)
-        tabs.setupWithViewPager(viewPager)
+        val viewPager: ViewPager = findViewById(R.id.view_pager)
+        tabs.setupWithViewPager(viewPager, true)
+        val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager, lessonId)
+        viewPager.adapter = sectionsPagerAdapter
+
+        viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
+        tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                viewPager.currentItem = tab!!.position
+            }
+        })
+
+
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener { view ->
@@ -37,5 +55,6 @@ class LessonInformationActivity : AppCompatActivity() {
 
     companion object {
         var lessonId by Delegates.notNull<Int>()
+        val titles = arrayOf("章节","作业","评价")
     }
 }

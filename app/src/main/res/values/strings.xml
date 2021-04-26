@@ -148,9 +148,9 @@
     <string name="login_failed">"Login failed"</string>
     <string name="login_title">欢迎使用StudyOnline</string>
     <string name="title_activity_lesson_information">LessonInformationActivity</string>
-    <string name="tab_text_1">进度</string>
+    <string name="tab_text_1">章节</string>
     <string name="tab_text_2">作业</string>
-    <string name="tab_text_3">留言</string>
+    <string name="tab_text_3">评价</string>
     <string name="title_studylog_list">studyLogs</string>
     <string name="title_studylog_detail">studyLog Detail</string>
     <string name="start_time_tmp">2020/04/16 20:00:00</string>
