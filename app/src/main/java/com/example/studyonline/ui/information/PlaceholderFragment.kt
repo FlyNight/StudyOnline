@@ -9,6 +9,8 @@ import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studyonline.R
 import com.example.studyonline.activitys.LessonInformationActivity.Companion.lessonId
@@ -16,21 +18,22 @@ import com.example.studyonline.activitys.MainActivity
 import com.example.studyonline.data.adapter.LessonScheduleAdapter
 import com.example.studyonline.data.adapter.TaskAdapter
 import com.example.studyonline.data.StepSTL
+import com.example.studyonline.data.adapter.DetailAdapter
 import com.example.studyonline.data.bean.LessonBean
 import com.github.mikephil.charting.charts.RadarChart
-import com.github.mikephil.charting.components.AxisBase
-import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
+import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.RadarData
 import com.github.mikephil.charting.data.RadarDataSet
 import com.github.mikephil.charting.data.RadarEntry
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.highlight.Highlight
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener
 import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration
 import com.orient.me.widget.rv.itemdocration.timeline.TimeLine
 import com.orient.me.widget.rv.layoutmanager.DoubleSideLayoutManager
-import java.io.Serializable
+import ir.android.bottomdialog.BottomDialog
 
 /**
  * A placeholder fragment containing a simple view.
@@ -124,13 +127,13 @@ class PlaceholderFragment : Fragment() {
         radarChart.description.text = "${MainActivity.userName} 的个人评价"
         radarChart.description.textSize = 15f
         val xAxis: XAxis = radarChart.xAxis
-        xAxis.setLabelCount(4, true)
-        xAxis.axisMaximum = 4f
+        xAxis.setLabelCount(3, true)
+        xAxis.axisMaximum = 2f
         xAxis.axisMinimum = 0f
         xAxis.textSize = 12f
         xAxis.textColor = colors[1]
         xAxis.valueFormatter = object : ValueFormatter() {
-            val strings = listOf("章节完成度", "作业完成度", "章节得分", "作业得分", "教师评价")
+            val strings = listOf("考勤", "作业","教师评价")
             override fun getFormattedValue(value: Float): String {
                 return strings[value.toInt()]
             }
@@ -143,18 +146,17 @@ class PlaceholderFragment : Fragment() {
                     "user_id = ${MainActivity.id} and lesson_id = $lessonId")
             resultSet.next()
             val evaluationId = resultSet.getInt("evaluation_id")
-            resultSet = ps.executeQuery("select * from evaluation where evaluation_id = $evaluationId")
+            resultSet = ps.executeQuery("select * from evaluations where evaluation_id = $evaluationId")
             resultSet.next()
-            list.add((RadarEntry(resultSet.getInt("outline_done").toFloat())))
-            list.add((RadarEntry(resultSet.getInt("task_done").toFloat())))
-            list.add((RadarEntry(resultSet.getInt("average_lesson_done").toFloat())))
-            list.add((RadarEntry(resultSet.getInt("task_score_done").toFloat())))
-            list.add((RadarEntry(resultSet.getInt("teacher_done").toFloat())))
+            list.add(RadarEntry(resultSet.getFloat("attendance")))
+            list.add(RadarEntry(resultSet.getFloat("assessment")))
+            list.add(RadarEntry(resultSet.getFloat("appraise")))
+            ps.close()
         }
         t1.start()
         t1.join()
         val yAxis: YAxis = radarChart.yAxis
-        yAxis.setLabelCount(5, true);
+        yAxis.setLabelCount(3, true);
         yAxis.axisMinimum = 0f;
         yAxis.setDrawTopYLabelEntry(false);
         yAxis.textSize = 15f;
@@ -164,31 +166,40 @@ class PlaceholderFragment : Fragment() {
         radarChart.description.isEnabled = true;
         radarChart.legend.isEnabled = false;
 
-        val set =  RadarDataSet(list, "Petterp")
+        radarChart.setOnChartValueSelectedListener(object : OnChartValueSelectedListener {
+            val dataContainer: RecyclerView = RecyclerView(context!!)
+            override fun onValueSelected(e: Entry?, h: Highlight?) {
+                val layoutManager = LinearLayoutManager(context)
+                dataContainer.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,800)
+                dataContainer.layoutManager = layoutManager
+                dataContainer.adapter = DetailAdapter(context!!, h!!.x.toInt(),MainActivity.id, lessonId)
+                context?.let { BottomDialog.Builder(it)
+                    .setCustomView(dataContainer)
+                    .show()}
+            }
 
-        //禁用标签
-        set.setDrawValues(true);
+            override fun onNothingSelected() {
+                radarChart.isSelected = false
+            }
+
+        })
+
+        val set =  RadarDataSet(list, "evaluation ${MainActivity.id} $lessonId")
+
+        set.setDrawValues(true)
         set.valueTextSize = 15f
-        //设置填充颜色
-        set.fillColor = Color.BLUE;
-        //设置填充透明度
-        set.fillAlpha = 40;
-        //设置启用填充
-        set.setDrawFilled(true);
-        //设置点击之后标签是否显示圆形外围
-        set.isDrawHighlightCircleEnabled = true;
-        //设置点击之后标签圆形外围的颜色
-        set.highlightCircleFillColor = Color.RED;
-        //设置点击之后标签圆形外围的透明度
-        set.highlightCircleStrokeAlpha = 40;
-        //设置点击之后标签圆形外围的半径
-        set.highlightCircleInnerRadius = 20f;
-        //设置点击之后标签圆形外围内圆的半径
-        set.highlightCircleOuterRadius = 10f;
+        set.fillColor = Color.BLUE
+        set.fillAlpha = 40
+        set.setDrawFilled(true)
+        set.isDrawHighlightCircleEnabled = true
+        set.highlightCircleFillColor = Color.RED
+        set.highlightCircleStrokeAlpha = 40
+        set.highlightCircleInnerRadius = 20f
+        set.highlightCircleOuterRadius = 10f
 
-        val data = RadarData(set);
-        radarChart.data = data;
-        radarChart.invalidate();
+        val data = RadarData(set)
+        radarChart.data = data
+        radarChart.invalidate()
     }
 
     companion object {

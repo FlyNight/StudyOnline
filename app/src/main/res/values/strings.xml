@@ -45,6 +45,7 @@
     <string name="menu_slideshow">课程表</string>
     <string name="todo">TODO</string>
     <string name="title_activity_select_lesson">%1$s</string>
+    <string name="detail">详情</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
