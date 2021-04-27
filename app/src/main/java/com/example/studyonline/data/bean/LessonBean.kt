@@ -232,9 +232,28 @@ class LessonBean(
     }
 }
 class Outline(
-    val done: Boolean,
+    private val done: Boolean,
     val name: String
-): Serializable
+): Serializable, ITimeItem {
+
+    override fun getTitle(): String {
+        return ""
+    }
+
+
+    override fun getColor(): Int {
+        return if (done)
+            1
+        else
+            0
+    }
+
+
+    override fun getResource(): Int {
+        return R.drawable.btn_round
+    }
+}
+
 class Task(
     val commitTime: String,
     private val taskName: String,
@@ -243,7 +262,7 @@ class Task(
     private val res_: Int
 ): Serializable, ITimeItem {
     override fun getTitle(): String {
-        return taskName
+        return commitTime.substring(0, 10)
     }
 
     override fun getColor(): Int {

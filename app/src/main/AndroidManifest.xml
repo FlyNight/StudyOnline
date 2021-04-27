@@ -20,7 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.StudyOnline"
         tools:replace="android:label">
-
+        <service
+            android:name=".services.DatabaseService"
+            android:exported="false"></service>
 
         <activity android:name=".ui.login.RegisterOrResetActivity" />
         <activity android:name=".activitys.LessonStartActivity" />

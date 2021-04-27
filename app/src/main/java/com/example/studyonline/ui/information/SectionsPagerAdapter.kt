@@ -25,16 +25,16 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager, pr
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> {
-                ScheduleFragment()
+                ScheduleFragment.newInstance(lessonId)
             }
             1 -> {
-                TaskFragment()
+                TaskFragment.newInstance(lessonId)
             }
-            3 -> {
-                EvaluationFragment()
+            2 -> {
+                EvaluationFragment.newInstance(lessonId)
             }
             else -> {
-                ScheduleFragment()
+                ScheduleFragment.newInstance(lessonId)
             }
         }
     }

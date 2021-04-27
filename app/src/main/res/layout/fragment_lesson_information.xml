@@ -6,10 +6,4 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.information.PlaceholderFragment">
-    <include layout="@layout/fragment_lesson_information_schedule"
-        android:id="@+id/lesson_schedule"/>
-    <include layout="@layout/fragment_lesson_information_task"
-        android:id="@+id/lesson_task"/>
-    <include layout="@layout/fragment_lesson_information_record"
-        android:id="@+id/lesson_discuss"/>
 </LinearLayout>

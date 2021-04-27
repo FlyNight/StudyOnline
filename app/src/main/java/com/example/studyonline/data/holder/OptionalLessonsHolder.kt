@@ -58,7 +58,7 @@ class OptionalLessonsHolder {
                             startWeek,
                             duration,
                             tag,
-                            OutlineHolder.getDataFromDatabase(context,lessonId),
+                            OutlineHolder.getDataFromDatabase(lessonId),
                             TaskHolder.getDataFromDatabase(context,lessonId)
                         )
                     )
@@ -105,7 +105,7 @@ class OptionalLessonsHolder {
                         startWeek,
                         duration,
                         tag,
-                        OutlineHolder.getDataFromDatabase(context,lessonId),
+                        OutlineHolder.getDataFromDatabase(lessonId),
                         TaskHolder.getDataFromDatabase(context,lessonId)
                     )
                 )
