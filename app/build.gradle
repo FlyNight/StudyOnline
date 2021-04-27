@@ -45,7 +45,7 @@ configurations {
 
 dependencies {
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
@@ -67,7 +67,7 @@ dependencies {
     implementation  'com.github.pedroSG94.vlc-example-streamplayer:pedrovlc:2.5.14v3'
     implementation "com.jakewharton:butterknife:10.2.1"
     annotationProcessor "com.jakewharton:butterknife-compiler:10.2.1"
-    compile 'com.github.javiersantos:BottomDialogs:1.2.1'
+    implementation 'com.github.javiersantos:BottomDialogs:1.2.1'
     implementation files('libs/mysql-connector-java-5.1.49.jar')
     implementation project(':library')
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
