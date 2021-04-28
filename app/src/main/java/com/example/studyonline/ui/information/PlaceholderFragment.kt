@@ -5,33 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.studyonline.R
-import com.example.studyonline.activitys.LessonInformationActivity.Companion.lessonId
-import com.example.studyonline.activitys.MainActivity
-import com.example.studyonline.data.adapter.ScheduleAdapter
-import com.example.studyonline.data.adapter.TaskAdapter
-import com.example.studyonline.data.StepSTL
-import com.example.studyonline.data.adapter.DetailAdapter
-import com.example.studyonline.data.bean.LessonBean
-import com.github.javiersantos.bottomdialogs.BottomDialog
-import com.github.mikephil.charting.charts.RadarChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.RadarData
-import com.github.mikephil.charting.data.RadarDataSet
-import com.github.mikephil.charting.data.RadarEntry
-import com.github.mikephil.charting.formatter.ValueFormatter
-import com.github.mikephil.charting.highlight.Highlight
-import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import com.orient.me.widget.rv.itemdocration.timeline.SingleTimeLineDecoration
-import com.orient.me.widget.rv.itemdocration.timeline.TimeLine
-import com.orient.me.widget.rv.layoutmanager.DoubleSideLayoutManager
 
 
 /**
@@ -54,8 +30,6 @@ class PlaceholderFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-
         return inflater.inflate(R.layout.fragment_lesson_information, container, false)
     }
 

@@ -2,17 +2,16 @@ package com.example.studyonline.activitys
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.res.Resources
-import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.view.*
 import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.navigation.NavigationView
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -25,12 +24,12 @@ import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studyonline.R
-import com.example.studyonline.data.adapter.DetailAdapter
+import com.example.studyonline.data.adapter.ChatAdapter
 import com.example.studyonline.ui.login.LoginActivity
 import com.github.javiersantos.bottomdialogs.BottomDialog
-import com.google.android.material.appbar.AppBarLayout
 import java.sql.Connection
 import java.sql.DriverManager
+import java.util.*
 import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
@@ -51,36 +50,23 @@ class MainActivity : AppCompatActivity() {
 
         val fab: FloatingActionButton = findViewById(R.id.fab)
         fab.setOnClickListener {
-            val layout = LinearLayout(applicationContext)
-            layout.layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            layout.orientation = LinearLayout.VERTICAL
-            val linearLayout = LinearLayout(applicationContext)
-            val exit = Button(applicationContext)
-            exit.background = resources.getDrawable(R.drawable.btn_round)
-            exit.text = "关闭"
-            linearLayout.addView(exit)
-            layout.addView(linearLayout)
-            val dataContainer = RecyclerView(applicationContext)
-            val layoutManager = LinearLayoutManager(applicationContext)
-            dataContainer.layoutManager = layoutManager
-            layout.addView(dataContainer)
+            val view = getChatView()
             val dialog = BottomDialog.Builder(this)
-                .setCustomView(layout)
+                .setTitle("聊天窗口")
+                .setNegativeText("关闭")
+                .setPositiveText("新建聊天")
+                .onNegative {
+                    it.dismiss()
+                }.onPositive {
+                    it.dismiss()
+                }
+                .setCustomView(view)
                 .build()
             dialog.show()
-            exit.setOnClickListener {
-                dialog.dismiss()
-            }
-
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow
@@ -125,6 +111,32 @@ class MainActivity : AppCompatActivity() {
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
+    }
+
+
+    private fun getChatView(): View {
+        val root = LinearLayout(this)
+        val chatContainer =  RecyclerView(this)
+        chatContainer.layoutManager = LinearLayoutManager(this)
+        if (userId == "-1") {
+            val text = TextView(this)
+            text.text = "您尚未登陆，请登录后查看"
+            text.gravity = Gravity.CENTER
+            root.addView(text)
+            return root
+        }
+        val adapter = ChatAdapter(this, id)
+        if (adapter.itemCount == 0) {
+            val text = TextView(this)
+            text.text = "当前暂无消息"
+            text.gravity = Gravity.CENTER
+            root.addView(text)
+            return root
+        }
+        chatContainer.adapter = adapter
+        adapter.notifyDataSetChanged()
+        root.addView(chatContainer)
+        return root
     }
 
     companion object {
