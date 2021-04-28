@@ -1,11 +1,15 @@
 package com.example.studyonline.activitys
 
 import android.annotation.SuppressLint
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.view.*
+import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.LinearLayout
@@ -87,9 +91,23 @@ class MainActivity : AppCompatActivity() {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    @SuppressLint("InflateParams")
+    @SuppressLint("InflateParams", "ResourceType")
     fun loginOrRegister(view: View) {
-        startActivityForResult(Intent(this, LoginActivity::class.java), 1)
+        val btn = view as Button
+        if (btn.text.toString() == "登录/注册")
+            startActivityForResult(Intent(this, LoginActivity::class.java), 1)
+        else {
+            val navView: NavigationView = findViewById(R.id.nav_view)
+            val navHeaderRoot: View = navView.findViewById(R.id.nav_header_root)
+            val userIdentity: TextView = navHeaderRoot.findViewById(R.id.user_identity)
+            val userName: TextView = navHeaderRoot.findViewById(R.id.user_name)
+            Companion.userName = "未登录"
+            userId = null.toString()
+            id = -1
+            userName.text = "未登录"
+            userIdentity.visibility = INVISIBLE
+            btn.text = "登录/注册"
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -116,9 +134,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun getChatView(): View {
         val root = LinearLayout(this)
-        val chatContainer =  RecyclerView(this)
+        val chatContainer = RecyclerView(this)
         chatContainer.layoutManager = LinearLayoutManager(this)
-        if (userId == "-1") {
+        if (id == -1) {
             val text = TextView(this)
             text.text = "您尚未登陆，请登录后查看"
             text.gravity = Gravity.CENTER
@@ -142,7 +160,7 @@ class MainActivity : AppCompatActivity() {
     companion object {
         lateinit var userName: String
         var userId: String = "-1"
-        var id by Delegates.notNull<Int>()
+        var id = -1
         lateinit var userIdentity: String
         lateinit var cn: Connection
         private fun mysqlConnect() {

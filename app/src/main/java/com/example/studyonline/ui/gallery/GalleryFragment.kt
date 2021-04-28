@@ -33,36 +33,18 @@ class GalleryFragment : Fragment() {
                 ViewModelProvider(this).get(GalleryViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_gallery, container, false)
         initList(root)
-        activity?.startService(Intent(context, TimeService::class.java))
         return root
-    }
-    inner class TimeChangedReceiver(): BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            val listView: ListView? = view?.findViewById(R.id.lesson_list)
-            val adapter = activity?.let { LessonsAdapter(it, R.layout.item_lesson, LessonBean.testData1) }
-            if (listView != null) {
-                listView.adapter = adapter
-            }
-            Toast.makeText(context,"Time Changed!", Toast.LENGTH_LONG).show()
-        }
-
-    }
-
-    inner class TimeService: Service() {
-        override fun onBind(intent: Intent?): IBinder? {
-            return null
-        }
-        override fun onCreate() {
-            super.onCreate()
-            val receiver = TimeChangedReceiver()
-            registerReceiver(receiver, IntentFilter(Intent.ACTION_TIME_TICK))
-        }
     }
 
     private fun initList(root: View) {
         val listView: ListView = root.findViewById(R.id.lesson_list)
-        if (MainActivity.userId == "-1")
+        if (MainActivity.id == -1) {
+            Toast.makeText(context,"Please Login First!", Toast.LENGTH_SHORT).show()
             return
+        }
+        listView.adapter = getAdapter()
+    }
+    private fun getAdapter(): LessonsAdapter {
         var adapter: LessonsAdapter? = null
         val t1 = Thread {
             adapter = activity?.let {
@@ -76,6 +58,6 @@ class GalleryFragment : Fragment() {
         }
         t1.start()
         t1.join()
-        listView.adapter = adapter
+        return adapter!!
     }
 }

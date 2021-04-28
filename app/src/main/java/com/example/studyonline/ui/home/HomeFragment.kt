@@ -24,12 +24,12 @@ class HomeFragment : Fragment() {
     private lateinit var homeViewModel: HomeViewModel
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         homeViewModel =
-                ViewModelProvider(this).get(HomeViewModel::class.java)
+            ViewModelProvider(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
 
         initBanner(root)
@@ -39,8 +39,13 @@ class HomeFragment : Fragment() {
 
     private fun initBanner(root: View) {
         val banner: Banner<DataBean, BannerImageAdapter<DataBean>> = root.findViewById(R.id.banner)
-        banner.setAdapter (object : BannerImageAdapter<DataBean>(DataBean.testData3) {
-            override fun onBindView(holder: BannerImageHolder, data: DataBean, position: Int, size: Int) {
+        banner.setAdapter(object : BannerImageAdapter<DataBean>(DataBean.testData3) {
+            override fun onBindView(
+                holder: BannerImageHolder,
+                data: DataBean,
+                position: Int,
+                size: Int
+            ) {
                 Glide.with(holder.imageView)
                     .load(data.imageUrl)
                     .apply(RequestOptions.bitmapTransform(RoundedCorners(30)))
@@ -53,13 +58,11 @@ class HomeFragment : Fragment() {
         val listView: ListView = root.findViewById(R.id.news_list)
         var adapter: OptionLessonsAdapter? = null
         val t1 = Thread {
-             adapter = activity?.let {
-                 context?.let { it1 -> OptionalLessonsHolder.getDataFromDatabase(it1, null) }?.let { it2 ->
-                     OptionLessonsAdapter(it, R.layout.optional_lesson_item,
-                         it2
-                     )
-                 }
-             }!!
+            adapter = OptionLessonsAdapter(
+                requireActivity(),
+                R.layout.optional_lesson_item,
+                OptionalLessonsHolder.getDataFromDatabase(requireContext(), null)
+            )
         }
         t1.start()
         t1.join()
